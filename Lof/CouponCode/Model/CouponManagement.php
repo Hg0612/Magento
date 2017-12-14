@@ -50,22 +50,46 @@ class CouponManagement implements CouponManagementInterface
      */
     public function set($cartId, $couponCode)
     {
-        echo "ok";die;
-        /** @var  \Magento\Quote\Model\Quote $quote */
-        $quote = $this->quoteRepository->getActive($cartId);
-        if (!$quote->getItemsCount()) {
-            throw new NoSuchEntityException(__('Cart %1 doesn\'t contain products', $cartId));
-        }
-        $quote->getShippingAddress()->setCollectShippingRates(true);
+        $flag = false;
+        // check login to apply coupon code
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $currentCustomer = $objectManager->get('Magento\Customer\Model\Session');
 
-        try {
-            $quote->setCouponCode($couponCode);
-            $this->quoteRepository->save($quote->collectTotals());
-        } catch (\Exception $e) {
-            throw new CouldNotSaveException(__('Could not apply coupon code'));
+        //get infor by couponcode
+        $coupon_collection = $objectManager->create('Lof\CouponCode\Model\Coupon')->getCollection();
+        $data = $coupon_collection->getByCouponCode($couponCode);
+        if(count($data) > 0){
+            $rule = $coupon_collection->getRule($data["rule_id"]);
+            //get checkout info
+            $customer_checkout = $objectManager->get('\Magento\Checkout\Model\Session')->getQuote()->getCustomer();
+            $customer_email = $customer_checkout->getEmail();
+            $customer_id = $customer_checkout->getId();
+            if($rule["is_check_email"]){
+                if((isset($data["email"]) && $data["email"] == $customer_email) || (isset($data["customer_id"]) && $data["customer_id"] == $customer_id))
+                    $flag = true;
+            } else{
+                $flag = true;
+            }
         }
-        if ($quote->getCouponCode() != $couponCode) {
-            throw new NoSuchEntityException(__('Coupon code is not valid'));
+        if($flag){
+            /** @var  \Magento\Quote\Model\Quote $quote */
+            $quote = $this->quoteRepository->getActive($cartId);
+            if (!$quote->getItemsCount()) {
+                throw new NoSuchEntityException(__('Cart %1 doesn\'t contain products', $cartId));
+            }
+            $quote->getShippingAddress()->setCollectShippingRates(true);
+
+            try {
+                $quote->setCouponCode($couponCode);
+                $this->quoteRepository->save($quote->collectTotals());
+            } catch (\Exception $e) {
+                throw new CouldNotSaveException(__('Could not apply coupon code'));
+            }
+            if ($quote->getCouponCode() != $couponCode) {
+                throw new NoSuchEntityException(__('Coupon code is not valid'));
+            }
+        }else {
+            throw new NoSuchEntityException(__('Coupon code is not valid2'));
         }
         return true;
     }
