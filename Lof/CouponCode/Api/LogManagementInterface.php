@@ -27,8 +27,9 @@ interface LogManagementInterface
 
     /**
      * GET for Log api
-     * @param string $param
+     * @param string $coupon_code
+     * @param string $email
      * @return string
      */
-    public function getLog($param);
+    public function getLog($coupon_code,$email);
 }

@@ -30,7 +30,7 @@ interface CouponManagementInterface
      * @param string $param
      * @return string
      */
-    public function getCoupon($param);
+    public function getCouponAlias($alias);
 
     /**
      * PUT for Coupon api

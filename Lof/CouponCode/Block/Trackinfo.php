@@ -12,7 +12,7 @@ class Trackinfo extends \Magento\Framework\View\Element\Template
         \Lof\CouponCode\Helper\Data $_couponData,
         \Magento\Sales\Api\Data\OrderInterface $orderRepository,
         \Magento\Framework\Registry $coreRegistry,
-        \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency,
+        \Magento\Store\Model\StoreManagerInterface $priceCurrency,
         array $data = []
      ) {
         $this->_couponData = $_couponData;
@@ -25,13 +25,13 @@ class Trackinfo extends \Magento\Framework\View\Element\Template
         if(!$this->_couponData->getConfig('general_settings/show')) return;
         $coupon_log = $this->_coreRegistry->registry('lofcouponcode_log');
         $sales_order_info = null;
-        $currencySymbol = $this->_priceCurrency->getCurrency()->getCurrencySymbol();
+        $currencyCode = $this->_priceCurrency->getStore()->getCurrentCurrencyCode();
         if($coupon_log && $coupon_log->getOrderId()) {
             $sales_order_info = $this->orderRepository->loadByIncrementId($coupon_log->getOrderId());
         }
         $this->assign('coupon_log', $coupon_log);
         $this->assign('order_info', $sales_order_info);
-        $this->assign('currencySymbol', $currencySymbol);
+        $this->assign('currencyCode', $currencyCode);
         return parent::_toHtml();
     }
     public function DiscountAmountFormat($couponRuleId, $discount_amount){

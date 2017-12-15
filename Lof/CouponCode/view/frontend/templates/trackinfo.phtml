@@ -32,7 +32,7 @@ if($coupon_log) {
 			</tr>
 			<tr class="data-order-total">
 				<td class="row-label"><?php echo __("Order Total");?></td>
-				<td class="row-value"><?php echo $currencySymbol . $order_info->getSubtotal();?></td>
+				<td class="row-value"><?php echo $order_info->getSubtotal().$currencyCode;?></td>
 			</tr>
 			<tr class="data-order-created-date">
 				<td class="row-label"><?php echo __("Created Date");?></td>

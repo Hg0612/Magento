@@ -23,12 +23,61 @@ namespace Lof\CouponCode\Model;
 
 class LogManagement
 {
+	 protected $_registry;
+	 protected $_logModel;
+	 protected $_couponHelper;
+	 protected $orderRepository;
+	 protected $_priceCurrency;
 
+	 public function __construct(
+        \Magento\Framework\Registry $registry,
+        \Lof\CouponCode\Model\Log $logModel,
+        \Lof\CouponCode\Helper\Data $helperData,
+        \Magento\Sales\Api\Data\OrderInterface $orderRepository,
+        \Magento\Store\Model\StoreManagerInterface $priceCurrency
+        ) {
+        $this->_registry = $registry;
+        $this->_logModel = $logModel;
+        $this->_couponHelper = $helperData;
+        $this->orderRepository = $orderRepository;
+        $this->_priceCurrency = $priceCurrency;
+    }
     /**
      * {@inheritdoc}
      */
-    public function getLog($param)
+    public function getLog($coupon_code,$email)
     {
-        return 'hello api GET return the $param ' . $param;
+    	if(!$this->_couponHelper->getConfig('general_settings/show') || !$this->_couponHelper->getConfig('general_settings/allow_track_log')) {
+            return [];
+        }
+
+        $return = [];
+        $coupon_code = trim($coupon_code);
+		$customer_email = trim($email);
+		if($coupon_code && $customer_email) {
+			$collection = $this->_logModel->getCollection();
+			$collection = $collection->addFieldToFilter("coupon_code", $coupon_code)
+									->addFieldToFilter("email_address", $customer_email);
+
+			if(0 < $collection->getSize()){
+				$log = $collection->getFirstItem();
+				$return = [
+					"order_id" => $log->getOrderId(),
+					"coupon_code" => $log->getCouponCode(),
+					"full_name" => $log->getFullName(),
+					"email_address" => $log->getEmailAddress(),
+					"discount_amount" => $log->getDiscountAmount(),
+				];
+
+				if($log && $log->getOrderId()) {
+		            $sales_order_info = $this->orderRepository->loadByIncrementId($log->getOrderId());
+		            $currencyCode = $this->_priceCurrency->getStore()->getCurrentCurrencyCode();
+		            $return["order_status"] = $sales_order_info->getStatusLabel();
+		            $return["order_total"] = $sales_order_info->getSubtotal().$currencyCode;
+		        }
+
+			}
+		}
+        return json_encode($return);
     }
 }

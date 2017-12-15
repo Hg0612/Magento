@@ -194,4 +194,11 @@ class Rule extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             $binds = [':rule_id' => (int)$id];
             return $connection->fetchRow($select, $binds);
         }
+// --------------------------. GET all rules
+        public function getRuleData()
+        {
+            $connection = $this->getConnection();
+            $select = $connection->select()->from($this->getTable('lof_couponcode_rule'))->join(array('salesrule' => $this->getTable('salesrule')), 'lof_couponcode_rule.rule_id = salesrule.rule_id');
+            return $connection->fetchAll($select);
+        }
     }

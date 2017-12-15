@@ -23,6 +23,12 @@ class CouponManagement implements CouponManagementInterface
      * @var \Magento\Quote\Api\CartRepositoryInterface
      */
     protected $quoteRepository;
+    /**
+     * Quote repository.
+     *
+     * @var \Magento\Framework\ObjectManagerInterface $objectManager
+     */
+    protected $_objectManager;
 
     /**
      * Constructs a coupon read service object.
@@ -30,9 +36,11 @@ class CouponManagement implements CouponManagementInterface
      * @param \Magento\Quote\Api\CartRepositoryInterface $quoteRepository Quote repository.
      */
     public function __construct(
-        \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
+        \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
+        \Magento\Framework\ObjectManagerInterface $objectManager
     ) {
         $this->quoteRepository = $quoteRepository;
+        $this->_objectManager = $objectManager;
     }
 
     /**
@@ -115,5 +123,13 @@ class CouponManagement implements CouponManagementInterface
             throw new CouldNotDeleteException(__('Could not delete coupon code'));
         }
         return true;
+    }
+    public function getCouponAlias($alias){
+
+        $coupon_model = $this->_objectManager->create('Lof\CouponCode\Model\Coupon')->getCouponByAlias($alias);
+        $data = $coupon_model->getOrigData();
+        $data["conditions_serialized"] = isset($data["conditions_serialized"])? json_decode($data["conditions_serialized"]) : (object)[];
+        $data["actions_serialized"] = isset($data["actions_serialized"])? json_decode($data["actions_serialized"]) : (object)[];
+        return json_encode($data,true);
     }
 }
