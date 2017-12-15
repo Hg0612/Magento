@@ -164,6 +164,7 @@ class Generate extends Action
 			        		$emailFrom = $this->_couponHelper->getConfig('general_settings/sender_email_identity');
 		                    $emailidentifier = self::EMAILIDENTIFIER;
 			        		$discount_amount_formatted = $couponRuleData->getDiscountAmount();
+			        		$simple_action = $couponRuleData->getSimpleAction();
 		                    if($simple_action == 'by_percent') {
 		                        $discount_amount_formatted .='%';
 		                    }elseif($simple_action == 'fixed'){
