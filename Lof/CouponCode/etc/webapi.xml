@@ -78,8 +78,8 @@
 			<resource ref="Lof_CouponCode::log_delete"/>
 		</resources>
 	</route>
-	<route method="GET" url="/V1/lof-couponcode/coupon">
-		<service class="Lof\CouponCode\Api\CouponManagementInterface" method="getCoupon"/>
+	<route method="GET" url="/V1/lof-couponcode/coupon/:alias">
+		<service class="Lof\CouponCode\Api\CouponManagementInterface" method="getCouponAlias"/>
 		<resources>
 			<resource ref="anonymous"/>
 		</resources>
@@ -108,7 +108,7 @@
 			<resource ref="anonymous"/>
 		</resources>
 	</route>
-	<route method="GET" url="/V1/lof-couponcode/log">
+	<route method="GET" url="/V1/lof-couponcode/log/:coupon_code/:email">
 		<service class="Lof\CouponCode\Api\LogManagementInterface" method="getLog"/>
 		<resources>
 			<resource ref="anonymous"/>

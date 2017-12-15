@@ -30,7 +30,7 @@ interface RuleManagementInterface
      * @param string $param
      * @return string
      */
-    public function getRule($param);
+    public function getRule();
 
     /**
      * POST for Rule api

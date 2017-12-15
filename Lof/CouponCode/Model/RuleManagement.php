@@ -23,13 +23,20 @@ namespace Lof\CouponCode\Model;
 
 class RuleManagement
 {
+    protected $_objectManager;
+    public function __construct(
+        \Magento\Framework\ObjectManagerInterface $objectManager
+    ) {
+        $this->_objectManager = $objectManager;
+    }
 
     /**
      * {@inheritdoc}
      */
-    public function getRule($param)
+    public function getRule()
     {
-        return 'hello api GET return the $param ' . $param;
+        $coupon_model = $this->_objectManager->create('Lof\CouponCode\Model\ResourceModel\Rule')->getRuleData();
+        return json_encode($coupon_model);
     }
 
     /**
