@@ -3,7 +3,7 @@
 	<route method="GET" url="/V1/lof-couponcode/generatecoupon">
 		<service class="Lof\CouponCode\Api\CouponRepositoryInterface" method="save"/>
 		<resources>
-			<resource ref="anonymous"/><!-- <resource ref="Lof_CouponCode::coupon_save"/> -->
+			<resource ref="Lof_CouponCode::coupon_save"/>
 		</resources>
 	</route>
 	<route method="GET" url="/V1/lof-couponcode/search">
