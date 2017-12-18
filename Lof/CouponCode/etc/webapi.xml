@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
-	<route method="POST" url="/V1/lof-couponcode/coupon">
+	<route method="GET" url="/V1/lof-couponcode/generatecoupon">
 		<service class="Lof\CouponCode\Api\CouponRepositoryInterface" method="save"/>
 		<resources>
-			<resource ref="Lof_CouponCode::coupon_save"/>
+			<resource ref="anonymous"/><!-- <resource ref="Lof_CouponCode::coupon_save"/> -->
 		</resources>
 	</route>
 	<route method="GET" url="/V1/lof-couponcode/search">
@@ -48,7 +48,7 @@
 			<resource ref="Lof_CouponCode::rule_save"/>
 		</resources>
 	</route>
-	<route method="DELETE" url="/V1/lof-couponcode/:ruleId">
+	<route method="DELETE" url="/V1/lof-couponcode/rule/:ruleId">
 		<service class="Lof\CouponCode\Api\RuleRepositoryInterface" method="deleteById"/>
 		<resources>
 			<resource ref="Lof_CouponCode::rule_delete"/>
@@ -80,6 +80,12 @@
 	</route>
 	<route method="GET" url="/V1/lof-couponcode/coupon/:alias">
 		<service class="Lof\CouponCode\Api\CouponManagementInterface" method="getCouponAlias"/>
+		<resources>
+			<resource ref="anonymous"/>
+		</resources>
+	</route>
+	<route method="GET" url="/V1/lof-couponcode/listcoupon">
+		<service class="Lof\CouponCode\Api\CouponManagementInterface" method="getCouponByConditions"/>
 		<resources>
 			<resource ref="anonymous"/>
 		</resources>

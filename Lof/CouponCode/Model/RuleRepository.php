@@ -67,6 +67,7 @@ class RuleRepository implements ruleRepositoryInterface
     public function __construct(
         ResourceRule $resource,
         RuleFactory $ruleFactory,
+        Rule $rule,
         RuleInterfaceFactory $dataRuleFactory,
         RuleCollectionFactory $ruleCollectionFactory,
         RuleSearchResultsInterfaceFactory $searchResultsFactory,
@@ -76,6 +77,7 @@ class RuleRepository implements ruleRepositoryInterface
     ) {
         $this->resource = $resource;
         $this->ruleFactory = $ruleFactory;
+        $this->rule = $rule;
         $this->ruleCollectionFactory = $ruleCollectionFactory;
         $this->searchResultsFactory = $searchResultsFactory;
         $this->dataObjectHelper = $dataObjectHelper;
@@ -110,12 +112,14 @@ class RuleRepository implements ruleRepositoryInterface
      */
     public function getById($ruleId)
     {
-        $rule = $this->ruleFactory->create();
-        $rule->getResource()->load($rule, $ruleId);
-        if (!$rule->getId()) {
+
+        $rule = $this->rule->load($ruleId, 'rule_id');
+        $ruleData = $rule->getData();
+        if (!$ruleData["rule_id"]) {
             throw new NoSuchEntityException(__('Rule with id "%1" does not exist.', $ruleId));
+        }else {
+           return true;
         }
-        return $rule;
     }
 
     /**
@@ -178,6 +182,11 @@ class RuleRepository implements ruleRepositoryInterface
      */
     public function deleteById($ruleId)
     {
-        return $this->delete($this->getById($ruleId));
+        if($this->getById($ruleId)){
+            $this->rule->load($ruleId, 'rule_id')->delete();
+            return true;
+        }else{
+            throw new CouldNotDeleteException(__('Could not delete the Rule: %1'));
+        }
     }
 }

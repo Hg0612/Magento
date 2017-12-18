@@ -38,4 +38,11 @@ interface CouponManagementInterface
      * @return string
      */
     public function putCoupon($param);
+
+    /**
+     * GET List Coupon api
+     * @param string $conditions
+     * @return string
+     */
+    public function getCouponByConditions();
 }

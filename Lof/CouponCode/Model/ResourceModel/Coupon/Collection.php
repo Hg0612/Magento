@@ -142,4 +142,30 @@ class Collection extends AbstractCollection
       $result = $connection->fetchRow($select);
       return $result;
     }
+
+    public function getCouponCodeByConditions($param){
+      $connection = $this->_resource->getConnection();
+      $select = 'SELECT *  FROM ' . $this->getTable('salesrule_coupon') . ' INNER JOIN '. $this->getTable('lof_couponcode_coupon').' ON salesrule_coupon.coupon_id = lof_couponcode_coupon.couponcode_id';
+      $where = '';
+      $numItems = count($param);
+        $i = 0;
+        foreach ($param as $key => $value) {
+          if(++$i === $numItems){
+            $where .=' lof_couponcode_coupon.'. $key . ' = ' . '"' . $value . '"';
+          } else{
+            $where .=' lof_couponcode_coupon.'. $key . ' = ' . '"' . $value . '" and ';
+          }
+        }
+      if($where != ''){
+        $where = ' WHERE '. $where;
+        $select = $select . $where;
+      }
+      try {
+        $data = $connection->fetchAll($select);
+        return $data;
+      } catch (\Exception $e) {
+        return __('Could not found coupon code');
+      }
+    }
+
 }

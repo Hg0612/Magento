@@ -132,4 +132,12 @@ class CouponManagement implements CouponManagementInterface
         $data["actions_serialized"] = isset($data["actions_serialized"])? json_decode($data["actions_serialized"]) : (object)[];
         return json_encode($data,true);
     }
+
+    public function getCouponByConditions(){
+        $requestHttp = $this->_objectManager->create('\Magento\Framework\App\Request\Http');
+        $conditions = $requestHttp->getParams();
+        $coupon_model = $this->_objectManager->create('Lof\CouponCode\Model\Coupon');
+        $data = $coupon_model->getResourceCollection()->getCouponCodeByConditions($conditions);
+        return json_encode($data,true);
+    }
 }
