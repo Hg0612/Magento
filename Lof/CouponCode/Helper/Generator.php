@@ -20,7 +20,7 @@
  */
 namespace Lof\CouponCode\Helper;
 
-class Generator extends \Magento\Framework\DataObject
+class Generator extends \Magento\Framework\App\Helper\AbstractHelper
 {
 	CONST EMAILIDENTIFIER = 'sent_mail_with_visitor';
 	protected $_couponHelper;
@@ -49,14 +49,22 @@ class Generator extends \Magento\Framework\DataObject
     protected $_coupon_alias;
     protected $_customer_id;
 
-    public function initRequireModels() {
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->_couponHelper = $objectManager->get('\Lof\CouponCode\Helper\Data');
-        $this->couponFactory = $objectManager->get('\Magento\SalesRule\Model\CouponFactory');
-        $this->dateTime = $objectManager->get('\Magento\Framework\Stdlib\DateTime');
-        $this->date = $objectManager->get('\Magento\Framework\Stdlib\DateTime\DateTime');
-        $this->lofCoupon = $objectManager->get('\Lof\CouponCode\Model\CouponFactory');
+    public function __construct(
+        \Magento\Framework\App\Helper\Context $context,
+        \Lof\CouponCode\Helper\Data $couponHelper,
+        \Magento\SalesRule\Model\CouponFactory $couponFactory,
+        \Magento\Framework\Stdlib\DateTime $dateTime,
+        \Magento\Framework\Stdlib\DateTime\DateTime $date,
+        \Lof\CouponCode\Model\CouponFactory $lofCoupon
+    ) {
+        parent::__construct($context);
+         $this->_couponHelper = $couponHelper;
+        $this->couponFactory = $couponFactory;
+        $this->dateTime = $dateTime;
+        $this->date = $date;
+        $this->lofCoupon = $lofCoupon;
     }
+
     public function setCustomerName($name = ''){
     	$this->_customer_name = $name;
     	return $this;

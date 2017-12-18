@@ -29,13 +29,10 @@ interface CouponRepositoryInterface
 
     /**
      * Save Coupon
-     * @param \Lof\CouponCode\Api\Data\CouponInterface $coupon
-     * @return \Lof\CouponCode\Api\Data\CouponInterface
      * @throws \Magento\Framework\Exception\LocalizedException
+     * @return string
      */
-    public function save(
-        \Lof\CouponCode\Api\Data\CouponInterface $coupon
-    );
+    public function save();
 
     /**
      * Retrieve Coupon

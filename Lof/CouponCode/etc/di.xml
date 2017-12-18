@@ -33,6 +33,8 @@
     <preference for="Lof\CouponCode\Api\CouponManagementInterface" type="Lof\CouponCode\Model\CouponManagement" />
     <preference for="Lof\CouponCode\Api\RuleManagementInterface" type="Lof\CouponCode\Model\RuleManagement" />
     <preference for="Lof\CouponCode\Api\RuleRepositoryInterface" type="Lof\CouponCode\Model\RuleRepository" />
+    <preference for="Lof\CouponCode\Api\CouponRepositoryInterface" type="Lof\CouponCode\Model\CouponRepository" />
+
     <type name="Magento\Newsletter\Model\Subscriber" shared="true">
         <arguments>
             <argument name="data" xsi:type="array">

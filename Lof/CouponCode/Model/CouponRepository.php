@@ -34,6 +34,7 @@ use Lof\CouponCode\Model\ResourceModel\Coupon as ResourceCoupon;
 use Lof\CouponCode\Model\ResourceModel\Coupon\CollectionFactory as CouponCollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
 
+
 class CouponRepository implements couponRepositoryInterface
 {
 
@@ -52,6 +53,8 @@ class CouponRepository implements couponRepositoryInterface
     protected $dataCouponFactory;
 
     private $storeManager;
+
+    protected $_objectManager;
 
 
     /**
@@ -72,30 +75,60 @@ class CouponRepository implements couponRepositoryInterface
         CouponSearchResultsInterfaceFactory $searchResultsFactory,
         DataObjectHelper $dataObjectHelper,
         DataObjectProcessor $dataObjectProcessor,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        \Magento\Framework\ObjectManagerInterface $objectManager,
+        \Lof\CouponCode\Helper\Data $helper,
+        \Lof\CouponCode\Helper\Generator $generateHelper
+
     ) {
-        $this->resource = $resource;
-        $this->couponFactory = $couponFactory;
-        $this->couponCollectionFactory = $couponCollectionFactory;
-        $this->searchResultsFactory = $searchResultsFactory;
-        $this->dataObjectHelper = $dataObjectHelper;
-        $this->dataCouponFactory = $dataCouponFactory;
-        $this->dataObjectProcessor = $dataObjectProcessor;
-        $this->storeManager = $storeManager;
+        $this->resource                 = $resource;
+        $this->couponFactory            = $couponFactory;
+        $this->couponCollectionFactory  = $couponCollectionFactory;
+        $this->searchResultsFactory     = $searchResultsFactory;
+        $this->dataObjectHelper         = $dataObjectHelper;
+        $this->dataCouponFactory        = $dataCouponFactory;
+        $this->dataObjectProcessor      = $dataObjectProcessor;
+        $this->storeManager             = $storeManager;
+        $this->_objectManager           = $objectManager;
+        $this->_couponHelper            = $helper;
+        $this->couponGenerator          = $generateHelper;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function save(
-        \Lof\CouponCode\Api\Data\CouponInterface $coupon
-    ) {
-        /* if (empty($coupon->getStoreId())) {
-            $storeId = $this->storeManager->getStore()->getId();
-            $coupon->setStoreId($storeId);
-        } */
+    public function save() {
+        $requestHttp = $this->_objectManager->create('\Magento\Framework\App\Request\Http');
+        $conditions = $requestHttp->getParams();
+        $customer_email = isset($conditions["customer_email"])? trim($conditions["customer_email"]) : null;
+        $rule_id = isset($conditions["rule_id"])? trim($conditions["rule_id"]) : null;
+
         try {
-            $coupon->getResource()->save($coupon);
+            if($customer_email && $rule_id){
+                $couponRuleData = $this->_couponHelper->getCouponRuleData($rule_id);
+                $ruleId = (int)$couponRuleData->getRuleId();
+                if($ruleId) {
+                    $limit_time_generated_coupon = (int)$couponRuleData->getLimitGenerated();
+                    $coupon_collection = $this->_objectManager->create('Lof\CouponCode\Model\Coupon')->getCollection();
+                    $number_generated_coupon = (int)$coupon_collection->getTotalByEmail($customer_email, $rule_id);
+
+                    if($limit_time_generated_coupon <= 0 || ($number_generated_coupon < $limit_time_generated_coupon)) {//check number coupons was generated for same email address
+                        $this->couponGenerator->setCustomerEmail($customer_email);
+                        $coupon_alias = "redeem-".md5($customer_email);
+                        $this->couponGenerator->setCouponAlias($coupon_alias);
+                    }
+                    $coupon_exists = false;
+                    $coupon_model = $this->_objectManager->create('Lof\CouponCode\Model\Coupon')->getCouponByAlias($coupon_alias);
+                    if($coupon_model->getId()){
+                        $coupon_exists = true;
+                    }
+                    if(!$coupon_exists){
+                        $coupon_code = $this->couponGenerator->generateCoupon($rule_id);
+                        $res = ["coupon_code" => $coupon_code];
+                        return json_encode($res);
+                    }
+                }
+            }
         } catch (\Exception $exception) {
             throw new CouldNotSaveException(__(
                 'Could not save the coupon: %1',
@@ -180,4 +213,5 @@ class CouponRepository implements couponRepositoryInterface
     {
         return $this->delete($this->getById($couponId));
     }
+
 }
