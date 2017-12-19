@@ -151,7 +151,11 @@ class Actions extends \Magento\Backend\Block\Widget\Form\Generic implements
         $fieldset->addField(
             'actions',
             'text',
-            ['name' => 'actions', 'label' => __('Apply To'), 'title' => __('Apply To'), 'required' => true]
+            ['name' => 'actions', 
+            'label' => __('Apply To'), 
+            'title' => __('Apply To'), 
+            'required' => true
+        ]
         )->setRule(
             $model
         )->setRenderer(
@@ -194,14 +198,18 @@ class Actions extends \Magento\Backend\Block\Widget\Form\Generic implements
         $fieldset->addField(
             'discount_qty',
             'text',
-            ['name' => 'discount_qty', 'label' => __('Maximum Qty Discount is Applied To')]
+            ['name' => 'discount_qty', 
+            'label' => __('Maximum Qty Discount is Applied To')
+            ]
         );
         $model->setDiscountQty($model->getDiscountQty() * 1);
 
         $fieldset->addField(
             'discount_step',
             'text',
-            ['name' => 'discount_step', 'label' => __('Discount Qty Step (Buy X)')]
+            ['name' => 'discount_step', 
+            'label' => __('Discount Qty Step (Buy X)')
+        ]
         );
 
         $fieldset->addField(

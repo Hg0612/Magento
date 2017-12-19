@@ -30,12 +30,11 @@ interface RuleRepositoryInterface
     /**
      * Save Rule
      * @param \Lof\CouponCode\Api\Data\RuleInterface $rule
-     * @return \Lof\CouponCode\Api\Data\RuleInterface
+     * @return string
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function save(
-        \Lof\CouponCode\Api\Data\RuleInterface $rule
-    );
+    // public function save(\Lof\CouponCode\Api\Data\RuleInterface $rule);
+    public function save(\Lof\CouponCode\Api\Data\RuleInterface $rule);
 
     /**
      * Retrieve Rule

@@ -82,6 +82,18 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             $isElementDisabled = true;
         }
 
+        $this->_eventManager->dispatch(
+        'lof_check_license',
+        ['obj' => $this,'ex'=>'Lof_CouponCode']
+        );
+
+        if ($this->hasData('is_valid') && $this->hasData('local_valid') && !$this->getData('is_valid') && !$this->getData('local_valid')) {
+            $isElementDisabled = true;
+            //$wysiwygConfig['enabled'] = $wysiwygConfig['add_variables'] = $wysiwygConfig['add_widgets'] = $wysiwygConfig['add_images'] = 0;
+            //$wysiwygConfig['plugins'] = [];
+
+        }
+
         $form = $this->_formFactory->create();
         $form->setHtmlIdPrefix('coupon_');
         $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('General Information')]);
@@ -91,43 +103,78 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $fieldset->addField(
             'alias',
             'text',
-            ['name' => 'alias', 'label' => __('Coupon Alias'), 'title' => __('Coupon Alias'), 'required' => false]
+            ['name' => 'alias', 
+            'label' => __('Coupon Alias'), 
+            'title' => __('Coupon Alias'), 
+            'required' => false,
+            'disabled' => $isElementDisabled
+            ]
         );
 
         $fieldset->addField(
             'code',
             'text',
-            ['name' => 'code', 'label' => __('Coupon Code'), 'title' => __('Coupon Code'), 'required' => true]
+            ['name' => 'code', 
+            'label' => __('Coupon Code'), 
+            'title' => __('Coupon Code'), 
+            'required' => true,
+            'disabled' => $isElementDisabled
+            ]
         );
 
         $fieldset->addField(
             'email',
             'text',
-            ['name' => 'email', 'label' => __('Email Address'), 'title' => __('Email Address'), 'required' => false]
+            ['name' => 'email', 
+            'label' => __('Email Address'), 
+            'title' => __('Email Address'), 
+            'required' => false,
+            'disabled' => $isElementDisabled
+            ]
         );
 
         $fieldset->addField(
             'usage_limit',
             'text',
-            ['name' => 'usage_limit', 'label' => __('Usage Limit'), 'title' => __('Usage Limit'), 'required' => false]
+            ['name' => 'usage_limit', 
+            'label' => __('Usage Limit'), 
+            'title' => __('Usage Limit'), 
+            'required' => false,
+            'disabled' => $isElementDisabled
+            ]
         );
 
         $fieldset->addField(
             'usage_per_customer',
             'text',
-            ['name' => 'usage_per_customer', 'label' => __('Usage Per Customer'), 'title' => __('Usage Per Customer'), 'required' => false]
+            ['name' => 'usage_per_customer', 
+            'label' => __('Usage Per Customer'), 
+            'title' => __('Usage Per Customer'), 
+            'required' => false,
+            'disabled' => $isElementDisabled
+            ]
         );
 
         $fieldset->addField(
             'time_used',
             'text',
-            ['name' => 'time_used', 'label' => __('Time Used'), 'title' => __('Time Used'), 'required' => false]
+            ['name' => 'time_used', 
+            'label' => __('Time Used'), 
+            'title' => __('Time Used'), 
+            'required' => false,
+            'disabled' => $isElementDisabled
+            ]
         );
 
         $fieldset->addField(
             'expiration_date',
             'text',
-            ['name' => 'expiration_date', 'label' => __('Expiration Date'), 'title' => __('Expiration Date'), 'required' => false]
+            ['name' => 'expiration_date', 
+            'label' => __('Expiration Date'), 
+            'title' => __('Expiration Date'), 
+            'required' => false,
+            'disabled' => $isElementDisabled
+            ]
         );
 
         $rule_text = '<a href="'.$this->getUrl("couponcode/rule/edit", ['coupon_rule_id'=>$model->getRuleId()]).'" target="_BLANK">'.$model->getRuleId().' ['.__("Edit Rule").']</a>';

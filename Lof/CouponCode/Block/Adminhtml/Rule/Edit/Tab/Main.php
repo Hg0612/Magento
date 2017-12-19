@@ -100,6 +100,17 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         } else {
             $isElementDisabled = true;
         }
+        $this->_eventManager->dispatch(
+        'lof_check_license',
+        ['obj' => $this,'ex'=>'Lof_CouponCode']
+        );
+
+        if ($this->hasData('is_valid') && $this->hasData('local_valid') && !$this->getData('is_valid') && !$this->getData('local_valid')) {
+            $isElementDisabled = true;
+            //$wysiwygConfig['enabled'] = $wysiwygConfig['add_variables'] = $wysiwygConfig['add_widgets'] = $wysiwygConfig['add_images'] = 0;
+            //$wysiwygConfig['plugins'] = [];
+
+        }
 
         $form = $this->_formFactory->create();
         $form->setHtmlIdPrefix('rule_');
@@ -112,13 +123,23 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $fieldset->addField(
             'name',
             'text',
-            ['name' => 'name', 'label' => __('Rule Name'), 'title' => __('Rule Name'), 'required' => true]
+            ['name' => 'name', 
+            'label' => __('Rule Name'), 
+            'title' => __('Rule Name'), 
+            'required' => true,
+            'disabled' => $isElementDisabled
+            ]
         );
 
         $fieldset->addField(
             'rule_key',
             'text',
-            ['name' => 'rule_key', 'label' => __('Rule Identifier Key'), 'title' => __('Rule Identifier Key'), 'required' => true]
+            ['name' => 'rule_key', 
+            'label' => __('Rule Identifier Key'), 
+            'title' => __('Rule Identifier Key'), 
+            'required' => true,
+            'disabled' => $isElementDisabled
+            ]
         );
 
         $fieldset->addField(
@@ -128,7 +149,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'name' => 'description',
                 'label' => __('Description'),
                 'title' => __('Description'),
-                'style' => 'height: 100px;'
+                'style' => 'height: 100px;',
+                'disabled' => $isElementDisabled
             ]
         );
         
@@ -167,7 +189,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'label' => __('Customer Groups'),
                 'title' => __('Customer Groups'),
                 'required' => true,
-                'values' =>  $this->_objectConverter->toOptionArray($groups, 'id', 'code')
+                'values' =>  $this->_objectConverter->toOptionArray($groups, 'id', 'code'),
+                'disabled' => $isElementDisabled
             ]
         );
         $dateFormat = $this->_localeDate->getDateFormat(\IntlDateFormatter::SHORT);
@@ -179,7 +202,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'label' => __('From'),
                 'title' => __('From'),
                 'input_format' => \Magento\Framework\Stdlib\DateTime::DATE_INTERNAL_FORMAT,
-                'date_format' => $dateFormat
+                'date_format' => $dateFormat,
+                'disabled' => $isElementDisabled
             ]
         );
         $fieldset->addField( 
@@ -190,18 +214,29 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'label' => __('To'),
                 'title' => __('To'),
                 'input_format' => \Magento\Framework\Stdlib\DateTime::DATE_INTERNAL_FORMAT,
-                'date_format' => $dateFormat
+                'date_format' => $dateFormat,
+                'disabled' => $isElementDisabled
             ]
         );
         $fieldset->addField(
             'uses_per_customer',
             'text',
-            ['name' => 'uses_per_customer', 'label' => __('Uses Per Customer'), 'title' => __('Uses Per Customer'), 'required' => false]
+            ['name' => 'uses_per_customer', 
+            'label' => __('Uses Per Customer'), 
+            'title' => __('Uses Per Customer'), 
+            'required' => false,
+            'disabled' => $isElementDisabled
+            ]
         );
         $fieldset->addField(
             'uses_per_coupon',
             'text',
-            ['name' => 'uses_per_coupon', 'label' => __('Uses per Coupon'), 'title' => __('Uses per Coupon'), 'required' => false]
+            ['name' => 'uses_per_coupon', 
+            'label' => __('Uses per Coupon'), 
+            'title' => __('Uses per Coupon'), 
+            'required' => false,
+            'disabled' => $isElementDisabled
+            ]
         );
 
         $fieldset->addField('sort_order', 'text', ['name' => 'sort_order', 'label' => __('Priority')]);
@@ -213,7 +248,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'label' => __('Public In RSS Feed'),
                 'title' => __('Public In RSS Feed'),
                 'name' => 'is_rss',
-                'options' => ['1' => __('Yes'), '0' => __('No')]
+                'options' => ['1' => __('Yes'), '0' => __('No')],
+                'disabled' => $isElementDisabled
             ]
         );
 
@@ -237,7 +273,13 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $fieldset->addField(
             'limit_generated',
             'text',
-            ['name' => 'limit_generated', 'label' => __('Limit Number Coupons Was Generated Per Email'), 'title' => __('Limit Number Coupons Was Generated Per Email'), 'required' => false, 'note' => __('Limit number coupons can generated for a email address.')]
+            ['name' => 'limit_generated', 
+            'label' => __('Limit Number Coupons Was Generated Per Email'), 
+            'title' => __('Limit Number Coupons Was Generated Per Email'), 
+            'required' => false, 
+            'note' => __('Limit number coupons can generated for a email address.'),
+            'disabled' => $isElementDisabled
+            ]
         );
 
         $fieldset->addField(
@@ -249,14 +291,20 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'required' => false, 
             'note' => __('Enable/disable check exactly email address when apply coupon code on shopping cart and checkout page. If not equal, the coupon code can not apply.'),
             'options' => ['1' => __('Yes'), 
-                        '0' => __('No')]
+                        '0' => __('No')],
+            'disabled' => $isElementDisabled
             ]
         );
 
         $fieldset->addField(
             'coupons_generated',
             'text',
-            ['name' => 'coupons_generated', 'label' => __('Coupons Generated'), 'title' => __('Coupons Generated'), 'required' => false]
+            ['name' => 'coupons_generated', 
+            'label' => __('Coupons Generated'), 
+            'title' => __('Coupons Generated'), 
+            'required' => false,
+            'disabled' => $isElementDisabled
+            ]
         );
 
         // if($event_type){

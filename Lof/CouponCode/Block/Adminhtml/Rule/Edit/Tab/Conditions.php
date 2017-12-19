@@ -66,6 +66,18 @@ class Conditions extends \Magento\Backend\Block\Widget\Form\Generic implements \
             $isElementDisabled = true;
         }
 
+        $this->_eventManager->dispatch(
+        'lof_check_license',
+        ['obj' => $this,'ex'=>'Lof_CouponCode']
+        );
+
+        if ($this->hasData('is_valid') && $this->hasData('local_valid') && !$this->getData('is_valid') && !$this->getData('local_valid')) {
+            $isElementDisabled = true;
+            //$wysiwygConfig['enabled'] = $wysiwygConfig['add_variables'] = $wysiwygConfig['add_widgets'] = $wysiwygConfig['add_images'] = 0;
+            //$wysiwygConfig['plugins'] = [];
+
+        }
+
         $form = $this->_formFactory->create();
         $form->setHtmlIdPrefix('rule_'); 
 

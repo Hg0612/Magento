@@ -21,9 +21,9 @@
 
 namespace Lof\CouponCode\Model;
 
-use Lof\CouponCode\Api\Data\RuleInterface;
 
-class Rule extends \Magento\Rule\Model\AbstractModel implements RuleInterface
+
+class Rule extends \Magento\Rule\Model\AbstractModel
 {
     /**
      * Rule Statues
@@ -39,6 +39,8 @@ class Rule extends \Magento\Rule\Model\AbstractModel implements RuleInterface
     const WEEKS = "weeks";
     const MONTHS = "months";
     const YEARS = "years";
+    const RULE_ID = 'rule_id';
+    const COUPON_RULE_ID = 'coupon_rule_id';
 
  
     protected $_combineFactory;

@@ -33,7 +33,7 @@
 	<route method="POST" url="/V1/lof-couponcode/rule">
 		<service class="Lof\CouponCode\Api\RuleRepositoryInterface" method="save"/>
 		<resources>
-			<resource ref="Lof_CouponCode::rule_save"/>
+			<resource ref="anonymous"/><!-- <resource ref="Lof_CouponCode::rule_edit"/> -->
 		</resources>
 	</route>
 	<route method="GET" url="/V1/lof-couponcode/:ruleId">

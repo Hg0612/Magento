@@ -71,6 +71,18 @@ class CouponInfo extends \Magento\Backend\Block\Widget\Form\Generic implements \
             $isElementDisabled = true;
         }
 
+        $this->_eventManager->dispatch(
+        'lof_check_license',
+        ['obj' => $this,'ex'=>'Lof_CouponCode']
+        );
+
+        if ($this->hasData('is_valid') && $this->hasData('local_valid') && !$this->getData('is_valid') && !$this->getData('local_valid')) {
+            $isElementDisabled = true;
+            //$wysiwygConfig['enabled'] = $wysiwygConfig['add_variables'] = $wysiwygConfig['add_widgets'] = $wysiwygConfig['add_images'] = 0;
+            //$wysiwygConfig['plugins'] = [];
+
+        }
+
         $form = $this->_formFactory->create();
         $form->setHtmlIdPrefix('rule_');
         $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('General Information')]);
@@ -88,7 +100,8 @@ class CouponInfo extends \Magento\Backend\Block\Widget\Form\Generic implements \
                 'required' => true,
                 'note' => __('Excluding prefix, suffix and separators.'),
                 'value' => $couponHelper->getDefaultLength(),
-                'class' => 'validate-digits validate-greater-than-zero'
+                'class' => 'validate-digits validate-greater-than-zero',
+                'disabled' => $isElementDisabled
             ]
         );
 
@@ -100,7 +113,8 @@ class CouponInfo extends \Magento\Backend\Block\Widget\Form\Generic implements \
                 'name' => 'coupons_format',
                 'options' => $couponHelper->getFormatsList(),
                 'required' => true,
-                'value' => $couponHelper->getDefaultFormat()
+                'value' => $couponHelper->getDefaultFormat(),
+                'disabled' => $isElementDisabled
             ]
         );
 
@@ -111,7 +125,8 @@ class CouponInfo extends \Magento\Backend\Block\Widget\Form\Generic implements \
                 'name' => 'coupons_prefix',
                 'label' => __('Code Prefix'),
                 'title' => __('Code Prefix'),
-                'value' => $couponHelper->getDefaultPrefix()
+                'value' => $couponHelper->getDefaultPrefix(),
+                'disabled' => $isElementDisabled
             ]
         );
 
@@ -122,7 +137,8 @@ class CouponInfo extends \Magento\Backend\Block\Widget\Form\Generic implements \
                 'name' => 'coupons_suffix',
                 'label' => __('Code Suffix'),
                 'title' => __('Code Suffix'),
-                'value' => $couponHelper->getDefaultSuffix()
+                'value' => $couponHelper->getDefaultSuffix(),
+                'disabled' => $isElementDisabled
             ]
         );
 
@@ -135,7 +151,8 @@ class CouponInfo extends \Magento\Backend\Block\Widget\Form\Generic implements \
                 'title' => __('Dash Every X Characters'),
                 'note' => __('If empty no separation.'),
                 'value' => $couponHelper->getDefaultDashInterval(),
-                'class' => 'validate-digits'
+                'class' => 'validate-digits',
+                'disabled' => $isElementDisabled
             ]
         );
         $form->setValues($model->getData());

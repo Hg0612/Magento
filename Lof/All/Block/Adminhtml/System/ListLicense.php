@@ -39,8 +39,7 @@ class ListLicense extends \Magento\Config\Block\System\Config\Form\Field
      * [__construct description]
      * @param \Magento\Backend\Block\Template\Context              $context 
      * @param \Magento\Framework\App\ResourceConnection            $resource      
-     * @param \Lof\All\Helper\Data                                 $helper   
-     * @param \Lof\All\Model\License $license     
+     * @param \Lof\All\Helper\Data                                 $helper        
      * @param \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress 
      */
     public function __construct(

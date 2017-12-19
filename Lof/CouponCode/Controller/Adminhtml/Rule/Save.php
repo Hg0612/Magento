@@ -24,11 +24,6 @@ namespace Lof\CouponCode\Controller\Adminhtml\Rule;
 class Save extends \Lof\CouponCode\Controller\Adminhtml\Rule
 {
  
-    // /**
-    //  * @param \Magento\Backend\App\Action\Context $context
-    //  * @param \Magento\Framework\Registry $coreRegistry
-    //  */
-
     /**
      * @var \Magento\Framework\Stdlib\DateTime\Filter\Date
      */

@@ -34,7 +34,7 @@ use Lof\CouponCode\Model\ResourceModel\Rule as ResourceRule;
 use Lof\CouponCode\Model\ResourceModel\Rule\CollectionFactory as RuleCollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
 
-class RuleRepository implements ruleRepositoryInterface
+class RuleRepository implements RuleRepositoryInterface
 {
 
     protected $resource;
@@ -52,6 +52,8 @@ class RuleRepository implements ruleRepositoryInterface
     protected $dataRuleFactory;
 
     private $storeManager;
+
+    protected $_objectManager;
 
 
     /**
@@ -73,7 +75,8 @@ class RuleRepository implements ruleRepositoryInterface
         RuleSearchResultsInterfaceFactory $searchResultsFactory,
         DataObjectHelper $dataObjectHelper,
         DataObjectProcessor $dataObjectProcessor,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        \Magento\Framework\ObjectManagerInterface $objectManager
     ) {
         $this->resource = $resource;
         $this->ruleFactory = $ruleFactory;
@@ -84,6 +87,7 @@ class RuleRepository implements ruleRepositoryInterface
         $this->dataRuleFactory = $dataRuleFactory;
         $this->dataObjectProcessor = $dataObjectProcessor;
         $this->storeManager = $storeManager;
+        $this->_objectManager = $objectManager;
     }
 
     /**
@@ -92,19 +96,48 @@ class RuleRepository implements ruleRepositoryInterface
     public function save(
         \Lof\CouponCode\Api\Data\RuleInterface $rule
     ) {
-        /* if (empty($rule->getStoreId())) {
-            $storeId = $this->storeManager->getStore()->getId();
-            $rule->setStoreId($storeId);
-        } */
-        try {
-            $rule->getResource()->save($rule);
-        } catch (\Exception $exception) {
-            throw new CouldNotSaveException(__(
-                'Could not save the rule: %1',
-                $exception->getMessage()
-            ));
+
+        if ($rule) {
+            try {
+                /** @var $model \Magento\SalesRule\Model\Rule */
+                $model = $this->_objectManager->create('Lof\CouponCode\Model\Rule');
+                $model_sale_rule = $this->_objectManager->create('Magento\SalesRule\Model\Rule');
+
+                if ($rule->getSimpleAction() == 'by_percent' && $rule->getDiscountAmount() != null) {
+                    $data['simple_action'] = $rule->getSimpleAction();
+                    $data['discount_amount'] = min(100, $rule->getDiscountAmount());
+                }
+
+                if ($rule->getConditions()) {
+                    $data['conditions'] = $rule->getConditions();
+                } 
+                if ($rule->getActions()) {
+                    $data['actions'] = $rule->getActions();
+                }
+                if($rule->getCouponsGenerated()){
+                    $data['coupons_generated'] = $rule->getCouponsGenerated();
+                }else{
+                    $data['coupons_generated'] = 0;
+                }
+                $data['coupons_length'] = $rule->getCodeLength();
+                $data['coupon_type'] = '2';
+                $data['use_auto_generation'] = '1';
+                $data['name'] = $rule->getRuleName();
+                $model_sale_rule->loadPost($data);
+                $model->setData($data);
+                $model_sale_rule->save();
+                $model->setData('rule_id',$model_sale_rule->getId());
+                $model->setData('name',$model_sale_rule->getName());
+                $model->save();
+
+                return true;
+            } catch (\Exception $exception) {
+                throw new CouldNotSaveException(__(
+                    'Could not save the rule: %1',
+                    $exception->getMessage()
+                ));
+            }
         }
-        return $rule;
     }
 
     /**
