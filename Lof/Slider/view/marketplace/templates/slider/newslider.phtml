@@ -1,0 +1,134 @@
+<div class="col-md-12">
+	<div class="x_panel">
+		<div class="x_title">
+            <h2><?php echo __('Add new slider');?></h2>
+         <div class="clearfix"></div>
+         </div>
+         <div class="x_content">
+         	<form enctype="multipart/form-data" method="post" action="<?php echo $block->getUrl('*/*/validateimport/');?>" id="edit_form" novalidate="novalidate">
+         		<input name="form_key" type="hidden" value="lenvCjnaOf6CBttF">
+		        <fieldset class="fieldset admin__fieldset fieldset_setting">
+		            <legend class="admin__legend legend">
+		                <span><?php echo __('New Slider');?></span>
+		                <button class="action-default scalable save primary" type="button" title="Submit Data" id="submit_button" onclick="MST.validateImport()">
+		                    <span><?php echo __('Submit Data');?></span>
+		                </button>
+		            </legend>
+		            <div class="admin__field field required col-md-12">
+		                <label for="entity" class="label admin__field-label col-md-3">
+		                    <span><?php echo __('Slider Title');?></span>
+		                </label>
+		                <div class="admin__field-control control col-md-8">
+		                    <div class="admin__field">
+		                        <input type="text" name="title">
+		                    </div>
+		                </div>
+		            </div>
+		        </fieldset>
+		        <fieldset class="fieldset admin__fieldset fieldset_behavior" style="display: none;">
+		            <legend class="admin__legend legend">
+		                <span><?php echo __('Import Behavior');?></span>
+		            </legend>
+		            <div class="admin__field field required">
+		                <label for="basic_behavior" class="label admin__field-label">
+		                    <span><?php echo __('Import Behavior');?></span>
+		                </label>
+		                <div class="admin__field-control control">
+		                    <div class="admin__field">
+		                        <select title="Import Behavior" name="behavior" id="basic_behavior" class="admin__control-select" data-validate="{required:true}" aria-required="true">
+		                            <option value="">-- <?php echo __('Please Select');?> --</option>
+		                            <option value="append"><?php echo __('Add/Update');?></option>
+		                            <option value="delete"><?php echo __('Delete');?></option>
+		                        </select>
+		                    </div>
+		                </div>
+		            </div>
+		            <div class="admin__field field required">
+		                <label for="basic_behaviorvalidation_strategy" class="label admin__field-label">
+		                    <span><?php echo __('Error Handling');?></span>
+		                </label>
+		                <div class="admin__field-control control">
+		                    <div class="admin__field">
+		                        <select title="Error Handling" name="validation_strategy" id="basic_behaviorvalidation_strategy" class="admin__control-select" data-validate="{required:true}" aria-required="true">
+		                            <option value="validation-stop-on-errors"><?php echo __('Stop on Error');?></option>
+		                            <option value="validation-skip-errors"><?php echo __('Skip error entries');?></option>
+		                        </select>
+		                    </div>
+		                </div>
+		            </div>
+		            <div class="admin__field field required">
+		                <label for="basic_behavior_allowed_error_count" class="label admin__field-label">
+		                    <span><?php echo __('Allowed Errors Count');?></span>
+		                </label>
+		                <div class="admin__field-control control">
+		                    <div class="admin__field">
+		                        <input type="text" class="input-file" title="Allowed Errors Count" value="10" name="allowed_error_count" id="basic_behavior_allowed_error_count" data-validate="{required:true}" aria-required="true">
+		                        <div id="basic_behavior_allowed_error_count-note" class="note"><?php echo __('Please specify number of errors to halt import process');?></div>
+		                    </div>
+		                </div>
+		            </div>
+		            <div class="admin__field field required">
+		                <label for="basic_behavior__import_field_separator" class="label admin__field-label">
+		                    <span><?php echo __('Field separator');?></span>
+		                </label>
+		                <div class="admin__field-control control">
+		                    <div class="admin__field">
+		                        <input type="text" class="input-file" title="Field separator" value="," name="_import_field_separator" id="basic_behavior__import_field_separator" data-validate="{required:true}" aria-required="true">
+		                    </div>
+		                </div>
+		            </div>
+		            <div class="admin__field field required">
+		                <label for="basic_behavior_import_multiple_value_separator" class="label admin__field-label">
+		                    <span><?php echo __('Multiple value separator');?></span>
+		                </label>
+		                <div class="admin__field-control control">
+		                    <div class="admin__field">
+		                        <input type="text" class="input-file" title="Multiple value separator" value="," name="_import_multiple_value_separator" id="basic_behavior_import_multiple_value_separator" data-validate="{required:true}" aria-required="true">
+		                    </div>
+		                </div>
+		            </div>
+		        </fieldset>
+		        <fieldset class="fieldset admin__fieldset fieldset_import" style="display: none;">
+		            <legend class="admin__legend legend">
+		                <span><?php echo __('File to Import');?></span>
+		            </legend>
+		            <div class="admin__field field required">
+		                <label for="import_file" class="label admin__field-label">
+		                    <span><?php echo __('Select File to Import');?></span>
+		                </label>
+		                <div class="admin__field-control control">
+		                    <div class="admin__field">
+		                        <input type="file" class="input-file" title="Select File to Import" name="import_file" id="import_file" data-validate="{required:true}" aria-required="true">
+		                    </div>
+		                </div>
+		            </div>
+		            <div class="admin__field field">
+		                <label for="import_images_file_dir" class="label admin__field-label">
+		                    <span><?php echo __('Images File Directory');?></span>
+		                </label>
+		                <div class="admin__field-control control">
+		                    <input type="text" class="input-text" title="Images File Directory" name="import_images_file_dir" id="import_images_file_dir" value="pub/media/catalog/product">                
+		                    <div class="note admin__field-note" id="import_images_file_dir-note">
+		                        <?php echo __('*Notice Import image first');?>                    </div>            
+		                </div>
+		            </div>
+		        </fieldset>
+		    </form>
+       		<div class="messages_validate_import"></div>
+		</div>	
+	</div>
+</div>
+<style>
+    .required > .admin__field-label > span::after{
+        content: "";
+    }
+    #submit_button{
+        float: right;
+    }
+    .admin__fieldset > .admin__field {
+	    clear: both;
+	}
+	.label {
+    color: #303030;
+	}
+</style>
